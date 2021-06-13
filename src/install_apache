@@ -1,0 +1,6 @@
+sudo
+apt-get -y update
+apt-get install -y apache2
+ufw allow 'Apache Full'
+systemctl restart apache2
+systemctl status apache2
