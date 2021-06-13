@@ -1,0 +1,59 @@
+#!/bin/bash
+: '
+    Utility to unhost new website on apaache server.
+
+'
+
+#User needs to enter the domain name
+#DOMAIN_NAME="test.org"
+
+usage(){
+    echo ""
+    echo "unhost_website <domain_name>"
+    echo ""
+    echo "<domain_name>   : valid domain name <test.com>"
+    echo ""
+    echo ""
+}
+
+if [ $# -lt 1 ]; then
+    echo
+    echo "[ error ] usage "
+    usage
+    exit 1
+fi
+
+DOMAIN_NAME="$1"
+DOCUMENT_ROOT="/var/www"
+
+cd /etc/apache2/sites-available/
+echo "[ status ] Disable 000-default.conf"
+a2dissite 000-default.conf
+
+echo "[ status ] Disable config for ( $DOMAIN_NAME )"
+a2dissite $CONFIG_FILE
+
+
+#Apache config directory - It may change for different versions of apache
+APACHE_CONFIG_DIR="/etc/apache2/sites-available"
+CONFIG_FILE="$DOMAIN_NAME.conf"
+
+CONFIG_FILE_WP="$APACHE_CONFIG_DIR/$CONFIG_FILE"
+
+#Remove configuration to config file
+echo "[ status ] Removing Apache Config For Domain Name ( $DOMAIN_NAME )"
+rm $CONFIG_FILE_WP 
+
+
+echo "[ status ] Removing Storage Directory For Domain Name ( $DOMAIN_NAME )"
+rm -rf $DOCUMENT_ROOT/$DOMAIN_NAME
+
+echo "[ status ] Remove entry in /etc/hosts"
+
+sed -i "/${DOMAIN_NAME}/d" /etc/hosts
+
+echo "[ status ] Restarting Apache Service"
+service apache2 restart
+
+echo "[ status ] HTTP Storage is Deleted for $DOMAIN_NAME"
+
