@@ -1,5 +1,8 @@
 ## Website Bringup Script for Ubuntu 16.04
 
+## Quick Install
+
+    - wget 
 
 #### Install Apache on Ubuntu 16.04
 
